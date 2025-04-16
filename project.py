@@ -2,7 +2,7 @@
 from datetime import datetime
 
 def create_task(title, description, due_date, priority):
-    return {'title': title, 'description': description, 'due_date': due_date, "priority": priority, 'completed': False}
+    return {'title': title, 'description': description, 'due_date': datetime.strptime(due_date, "%Y-%m-%d"), "priority": priority, 'completed': False}
 
 tasks = []
 
@@ -19,6 +19,16 @@ def add_task():
     task.append(tasks)
     task_dict[title] = task
     print('Task has been successfully added')
+
+def delete_task():
+    title = input("Enter the title of the task to delete: ")
+    if title in task_dict:
+        tasks.remove(task_dict[title])
+        del task_dict[title]
+        print('Task has been deleted')
+    else:
+        print('Task is not in the list')
+
 
 #2) do something to the task
 
