@@ -4,7 +4,7 @@ from datetime import datetime
 def create_task(title, description, due_date, priority):
     return {'title': title, 'description': description, 'due_date': datetime.strptime(due_date, "%d.%m.%Y"), "priority": priority, 'completed': False}
 
-tasks = []
+#tasks = []
 
 task_dict = {}
 
@@ -64,13 +64,90 @@ def view_pending_tasks():
         print(f"[{status}] {task['title']} - Priority: {task['priority']}, Due: {task['due_date'].date()}")
 
 
-add_task()
-view_all_tasks()
-
-#3) listing the tasks
-
 #4) sorting the tasks
+def sort_tasks_by_priority():
+    sorted_tasks = []
+    for task in tasks:
+        inserted = False
+        for i in range(len(sorted_tasks)):
+            if task['priority'] < sorted_tasks[i]['priority']:
+                sorted_tasks.insert(i, task)
+                inserted = True
+                break
+        if not inserted:
+            sorted_tasks.append(task)
+
+    for task in sorted_tasks:
+        if task['completed'] == True:
+            status = '✔'
+        elif task['completed'] == False:
+            status = '✘'
+        else:
+            status = '?'
+        print(f"[{status}] {task['title']} - Priority: {task['priority']}, Due: {task['due_date'].date()}")
+
+def sort_tasks_by_due_date():
+    sorted_tasks = []
+    for task in tasks:
+        inserted = False
+        for i in range(len(sorted_tasks)):
+            if task['due_date'] < sorted_tasks[i]['due_date']:
+                sorted_tasks.insert(i, task)
+                inserted = True
+                break
+        if not inserted:
+            sorted_tasks.append(task)
+
+    for task in sorted_tasks:
+        if task['completed'] == True:
+            status = '✔'
+        elif task['completed'] == False:
+            status = '✘'
+        else:
+            status = '?'
+        print(f"[{status}] {task['title']} - Priority: {task['priority']}, Due: {task['due_date'].date()}")
+
 
 #6) search
 
+def recursive_search_task(title, index=0):
+    if index < len(tasks):
+        current_task = tasks[index]
+        if current_task['title'] == title:
+            return current_task
+        else:
+            return recursive_search_task(title, index + 1)
+    return None
+
+
+
+
+
+#example:
+
+tasks = [
+    {
+        'title': 'Finish assignment',
+        'description': 'Complete the Python project',
+        'priority': 2,
+        'due_date': datetime(2025, 4, 20),
+        'completed': False
+    },
+    {
+        'title': 'Buy groceries',
+        'description': 'Milk, Eggs, Bread',
+        'priority': 1,
+        'due_date': datetime(2025, 4, 18),
+        'completed': True
+    },
+    {
+        'title': 'Workout',
+        'description': 'Go for a 30 min run',
+        'priority': 3,
+        'due_date': datetime(2025, 4, 19),
+        'completed': False
+    }
+]
+view_all_tasks()
+sort_tasks_by_due_date()
 #7) menu
