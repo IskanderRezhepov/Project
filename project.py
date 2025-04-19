@@ -4,7 +4,7 @@ from datetime import datetime
 def create_task(title, description, due_date, priority):
     return {'title': title, 'description': description, 'due_date': datetime.strptime(due_date, "%d.%m.%Y"), "priority": priority, 'completed': False}
 
-#tasks = []
+tasks = []
 
 task_dict = {}
 
@@ -119,35 +119,52 @@ def recursive_search_task(title, index=0):
             return recursive_search_task(title, index + 1)
     return None
 
-
-
-
-
-#example:
-
-tasks = [
-    {
-        'title': 'Finish assignment',
-        'description': 'Complete the Python project',
-        'priority': 2,
-        'due_date': datetime(2025, 4, 20),
-        'completed': False
-    },
-    {
-        'title': 'Buy groceries',
-        'description': 'Milk, Eggs, Bread',
-        'priority': 1,
-        'due_date': datetime(2025, 4, 18),
-        'completed': True
-    },
-    {
-        'title': 'Workout',
-        'description': 'Go for a 30 min run',
-        'priority': 3,
-        'due_date': datetime(2025, 4, 19),
-        'completed': False
-    }
-]
-view_all_tasks()
-sort_tasks_by_due_date()
 #7) menu
+
+
+def display_menu():
+    print("\n--- Task Manager ---")
+    print("1. Add Task")
+    print("2. Delete Task")
+    print("3. Mark Task Completed")
+    print("4. View All Tasks")
+    print("5. View Pending Tasks")
+    print("6. View Completed Tasks")
+    print("7. Sort Tasks by Priority")
+    print("8. Sort Tasks by Due Date")
+    print("9. Search Task by Title")
+    print("0. Exit")
+
+def task_manager():
+    while True:
+        display_menu()
+        choice = input("Choose an option: ")
+
+        if choice == '1':
+            add_task()
+        elif choice == '2':
+            delete_task()
+        elif choice == '3':
+            mark_task_completed()
+        elif choice == '4':
+            view_all_tasks()
+        elif choice == '5':
+            view_pending_tasks()
+        elif choice == '6':
+            view_completed_tasks()
+        elif choice == '7':
+            sort_tasks_by_priority()
+        elif choice == '8':
+            sort_tasks_by_due_date()
+        elif choice == '9':
+            title = input("Enter task title to search: ")
+            result = recursive_search_task(title)
+            print(result if result else "Task not found.")
+        elif choice == '0':
+            print("Exiting task manager...")
+            break
+        else:
+            print("Invalid option. Try again.")
+
+if __name__ == '__main__':
+    task_manager()
