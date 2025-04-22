@@ -51,6 +51,7 @@ def view_all_tasks():
             status = '✘'
         print(f"[{status}] {task['title']} - Priority: {task['priority']}, Due: {task['due_date'].date()}")
 
+
 def view_pending_tasks():
     pending_tasks = [task for task in tasks if not task['completed']]
     if not pending_tasks:
@@ -62,6 +63,14 @@ def view_pending_tasks():
         elif not task['completed']:
             status = '✘'
         print(f"[{status}] {task['title']} - Priority: {task['priority']}, Due: {task['due_date'].date()}")
+
+def view_completed_tasks():
+    completed_tasks = [task for task in tasks if task['completed']]
+    if not completed_tasks:
+        print("No completed tasks.")
+        return
+    for task in completed_tasks:
+        print(f"[✔] {task['title']} - Priority: {task['priority']}, Due: {task['due_date'].date()}")
 
 
 #4) sorting the tasks
@@ -77,6 +86,7 @@ def sort_tasks_by_priority():
         if not inserted:
             sorted_tasks.append(task)
 
+
     for task in sorted_tasks:
         if task['completed'] == True:
             status = '✔'
@@ -85,6 +95,7 @@ def sort_tasks_by_priority():
         else:
             status = '?'
         print(f"[{status}] {task['title']} - Priority: {task['priority']}, Due: {task['due_date'].date()}")
+
 
 def sort_tasks_by_due_date():
     sorted_tasks = []
@@ -110,6 +121,7 @@ def sort_tasks_by_due_date():
 
 #6) search
 
+
 def recursive_search_task(title, index=0):
     if index < len(tasks):
         current_task = tasks[index]
@@ -118,6 +130,7 @@ def recursive_search_task(title, index=0):
         else:
             return recursive_search_task(title, index + 1)
     return None
+
 
 #7) menu
 
@@ -134,6 +147,7 @@ def display_menu():
     print("8. Sort Tasks by Due Date")
     print("9. Search Task by Title")
     print("0. Exit")
+
 
 def task_manager():
     while True:
@@ -165,6 +179,7 @@ def task_manager():
             break
         else:
             print("Invalid option. Try again.")
+
 
 if __name__ == '__main__':
     task_manager()
