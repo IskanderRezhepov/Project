@@ -9,7 +9,19 @@ tasks = []
 task_dict = {}
 
 #1) create task
+class Task:
+    def __init__(self, title, description, due_date, priority, logical_expression):
+        self.title = title
+        self.description = description
+        self.due_date = datetime.strptime(due_date, "%d.%m.%Y")
+        self.priority = int(priority)
+        self.logical_expression = logical_expression  # e.g., "p and q"
+        self.completed = False
 
+    def __str__(self):
+        status = '✔' if self.completed else '✘'
+        return f"[{status}] {self.title} - Priority: {self.priority}, Due: {self.due_date.date()}"
+    
 def add_task():
     title = input('Enter task title: ')
     description = input("Enter task description: ")
