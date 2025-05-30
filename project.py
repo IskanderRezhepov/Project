@@ -174,7 +174,6 @@ def write_tasks_to_csv(filename):
 
 #7) menu
 
-
 def display_menu():
     print("\n--- Task Manager ---")
     print("1. Add Task")
@@ -183,17 +182,17 @@ def display_menu():
     print("4. View All Tasks")
     print("5. View Pending Tasks")
     print("6. View Completed Tasks")
-    print("7. Sort Tasks by Priority")
-    print("8. Sort Tasks by Due Date")
-    print("9. Search Task by Title")
+    print("7. Sort Tasks (Insertion Sort)")
+    print("8. Sort Tasks (Merge Sort)")
+    print("9. Search Task (Recursive)")
+    print("10. Load Tasks from CSV")
+    print("11. Save Tasks to CSV")
     print("0. Exit")
-
 
 def task_manager():
     while True:
         display_menu()
         choice = input("Choose an option: ")
-
         if choice == '1':
             add_task()
         elif choice == '2':
@@ -207,19 +206,24 @@ def task_manager():
         elif choice == '6':
             view_completed_tasks()
         elif choice == '7':
-            sort_tasks_by_priority()
+            sort_tasks(InsertionSort)
         elif choice == '8':
-            sort_tasks_by_due_date()
+            sort_tasks(MergeSort)
         elif choice == '9':
-            title = input("Enter task title to search: ")
-            result = recursive_search_task(title)
+            title = input("Enter title: ")
+            result = recursive_search(title)
             print(result if result else "Task not found.")
+        elif choice == '10':
+            filename = input("Enter filename: ")
+            read_tasks_from_csv(filename)
+        elif choice == '11':
+            filename = input("Enter filename to save to: ")
+            write_tasks_to_csv(filename)
         elif choice == '0':
-            print("Exiting task manager...")
+            print("Goodbye!")
             break
         else:
-            print("Invalid option. Try again.")
-
+            print("Invalid option.")
 
 if __name__ == '__main__':
     task_manager()
