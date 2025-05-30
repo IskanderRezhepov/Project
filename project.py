@@ -72,110 +72,67 @@ tasks = []
 def add_task():
     title = input('Enter task title: ')
     description = input("Enter task description: ")
-    due_date = input('Enter task due date: ') 
+    due_date = input('Enter task due date (dd.mm.yyyy): ')
     priority = int(input('Enter task priority (1-High, 2-Medium, 3-Low): '))
-    task = create_task(title, description, due_date, priority)
-    tasks.append(task)
-    task_dict[title] = task
-    print('Task has been successfully added')
+    logic = input('Enter logical expression (use p, q, ∧, ∨, →, ¬): ')
+    try:
+        task = Task(title, description, due_date, priority, logic)
+        tasks.append(task)
+        print('Task has been successfully added.')
+    except Exception as e:
+        print(f"Error: {e}")
 
 def delete_task():
-    title = input("Enter the title of the task to delete: ")
-    if title in task_dict:
-        tasks.remove(task_dict[title])
-        del task_dict[title]
-        print('Task has been deleted')
-    else:
-        print('Task is not in the list')
+    title = input("Enter title of task to delete: ")
+    for task in tasks:
+        if task.title == title:
+            tasks.remove(task)
+            print("Task deleted.")
+            return
+    print("Task not found.")
 
-
-#2) do something to the task + truth table check 
 def mark_task_completed():
-    title = input("Enter the title of the completed task: ")
-    if title in task_dict:
-        task_dict[title]['completed'] = True
-        print(f"Task '{title}' marked as completed.")
-    else:
-        print("Task not found.")
-
+    title = input("Enter title of completed task: ")
+    for task in tasks:
+        if task.title == title:
+            task.completed = True
+            print("Task marked as completed.")
+            return
+    print("Task not found.")
 
 def view_all_tasks():
     if not tasks:
         print("No tasks available.")
         return
     for task in tasks:
-        if task['completed']:
-            status = '✔'
-        elif not task['completed']:
-            status = '✘'
-        print(f"[{status}] {task['title']} - Priority: {task['priority']}, Due: {task['due_date'].date()}")
-
+        print(task)
 
 def view_pending_tasks():
-    pending_tasks = [task for task in tasks if not task['completed']]
-    if not pending_tasks:
+    pending = [t for t in tasks if not t.completed]
+    if not pending:
         print("No pending tasks.")
         return
-    for task in pending_tasks:
-        if task['completed']:
-            status = '✔'
-        elif not task['completed']:
-            status = '✘'
-        print(f"[{status}] {task['title']} - Priority: {task['priority']}, Due: {task['due_date'].date()}")
+    for task in pending:
+        print(task)
 
 def view_completed_tasks():
-    completed_tasks = [task for task in tasks if task['completed']]
-    if not completed_tasks:
+    done = [t for t in tasks if t.completed]
+    if not done:
         print("No completed tasks.")
         return
-    for task in completed_tasks:
-        print(f"[✔] {task['title']} - Priority: {task['priority']}, Due: {task['due_date'].date()}")
+    for task in done:
+        print(task)
 
 
 #4) sorting the tasks
-def sort_tasks_by_priority():
-    sorted_tasks = []
-    for task in tasks:
-        inserted = False
-        for i in range(len(sorted_tasks)):
-            if task['priority'] < sorted_tasks[i]['priority']:
-                sorted_tasks.insert(i, task)
-                inserted = True
-                break
-        if not inserted:
-            sorted_tasks.append(task)
-
-
-    for task in sorted_tasks:
-        if task['completed'] == True:
-            status = '✔'
-        elif task['completed'] == False:
-            status = '✘'
-        else:
-            status = '?'
-        print(f"[{status}] {task['title']} - Priority: {task['priority']}, Due: {task['due_date'].date()}")
-
-
-def sort_tasks_by_due_date():
-    sorted_tasks = []
-    for task in tasks:
-        inserted = False
-        for i in range(len(sorted_tasks)):
-            if task['due_date'] < sorted_tasks[i]['due_date']:
-                sorted_tasks.insert(i, task)
-                inserted = True
-                break
-        if not inserted:
-            sorted_tasks.append(task)
-
-    for task in sorted_tasks:
-        if task['completed'] == True:
-            status = '✔'
-        elif task['completed'] == False:
-            status = '✘'
-        else:
-            status = '?'
-        print(f"[{status}] {task['title']} - Priority: {task['priority']}, Due: {task['due_date'].date()}")
+def sort_tasks(algorithm):
+    sorter = algorithm()
+    start = time.time()
+    sorted_list = sorter.sort(tasks[:])
+    duration = time.time() - start
+    for t in sorted_list:
+        print(t)
+    print(f"\nSort completed in {duration:.4f} seconds.")
 
 
 #6) search
