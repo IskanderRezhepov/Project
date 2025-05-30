@@ -137,15 +137,39 @@ def sort_tasks(algorithm):
 
 #6) search
 
+def recursive_search(title, index=0):
+    if index >= len(tasks):
+        return None
+    if tasks[index].title == title:
+        return tasks[index]
+    return recursive_search(title, index + 1)
 
-def recursive_search_task(title, index=0):
-    if index < len(tasks):
-        current_task = tasks[index]
-        if current_task['title'] == title:
-            return current_task
-        else:
-            return recursive_search_task(title, index + 1)
-    return None
+#csv
+def read_tasks_from_csv(filename):
+    try:
+        df = pd.read_csv(filename)
+        for _, row in df.iterrows():
+            task = Task(row['title'], row['description'], row['due_date'], row['priority'], row['logical_expression'], row['completed'])
+            tasks.append(task)
+        print("Tasks loaded successfully.")
+    except Exception as e:
+        print(f"Failed to read file: {e}")
+
+def write_tasks_to_csv(filename):
+    try:
+        data = [{
+            'title': t.title,
+            'description': t.description,
+            'due_date': t.due_date.strftime("%d.%m.%Y"),
+            'priority': t.priority,
+            'logical_expression': t.logical_expression,
+            'completed': t.completed
+        } for t in tasks]
+        df = pd.DataFrame(data)
+        df.to_csv(filename, index=False)
+        print("Tasks saved successfully.")
+    except Exception as e:
+        print(f"Failed to write file: {e}")
 
 
 #7) menu
