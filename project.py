@@ -1,12 +1,9 @@
 #task management system
 from datetime import datetime
-
-def create_task(title, description, due_date, priority):
-    return {'title': title, 'description': description, 'due_date': datetime.strptime(due_date, "%d.%m.%Y"), "priority": priority, 'completed': False}
-
-tasks = []
-
-task_dict = {}
+import pandas as pd
+import time
+import ast
+from abc import ABC, abstractmethod
 
 #1) create task
 class Task:
