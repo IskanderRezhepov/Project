@@ -35,6 +35,40 @@ class Sorter(ABC):
     def sort(self, task_list):
         pass
 
+class InsertionSort(Sorter):
+    def sort(self, task_list):
+        for i in range(1, len(task_list)):
+            key = task_list[i]
+            j = i - 1
+            while j >= 0 and (task_list[j].priority > key.priority or (
+                task_list[j].priority == key.priority and not task_list[j].evaluate_logic() and key.evaluate_logic())):
+                task_list[j + 1] = task_list[j]
+                j -= 1
+            task_list[j + 1] = key
+        return task_list
+    
+class MergeSort(Sorter):
+    def sort(self, task_list):
+        if len(task_list) <= 1:
+            return task_list
+        mid = len(task_list) // 2
+        left = self.sort(task_list[:mid])
+        right = self.sort(task_list[mid:])
+        return self.merge(left, right)
+
+    def merge(self, left, right):
+        result = []
+        while left and right:
+            if (left[0].priority < right[0].priority or
+                (left[0].priority == right[0].priority and left[0].evaluate_logic() and not right[0].evaluate_logic())):
+                result.append(left.pop(0))
+            else:
+                result.append(right.pop(0))
+        result.extend(left + right)
+        return result
+
+tasks = []
+
 def add_task():
     title = input('Enter task title: ')
     description = input("Enter task description: ")
