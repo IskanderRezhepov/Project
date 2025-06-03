@@ -1,9 +1,10 @@
-#task management system
+
 from datetime import datetime
 import pandas as pd
 import time
-import ast
+import re 
 from abc import ABC, abstractmethod
+import matplotlib.pyplot as plt
 
 #1) create task
 class Task:
@@ -21,7 +22,7 @@ class Task:
 
     def evaluate_logic(self):
         try:
-            p, q = True, False  # default for evaluation
+            p, q = True, False 
             return eval(self.logical_expression.replace('∧', 'and').replace('∨', 'or')
                         .replace('¬', 'not ').replace('→', '<=').replace('↔', '=='))
         except Exception:
@@ -66,36 +67,46 @@ class MergeSort(Sorter):
 
 tasks = []
 
+task_dict = {}
+
 def add_task():
-    title = input('Enter task title: ')
-    description = input("Enter task description: ")
-    due_date = input('Enter task due date (dd.mm.yyyy): ')
-    priority = int(input('Enter task priority (1-High, 2-Medium, 3-Low): '))
-    logic = input('Enter logical expression (use p, q, ∧, ∨, →, ¬): ')
     try:
+        title = input('Enter task title: ')
+        if title in task_dict:
+            print("Task with this title already exists.")
+            return
+        description = input("Enter task description: ")
+        due_date = input('Enter task due date (dd.mm.yyyy): ')
+        priority = int(input('Enter task priority (1-High, 2-Medium, 3-Low): '))
+        logic = input('Enter logical expression (use p, q, ∧, ∨, →, ¬): ')
         task = Task(title, description, due_date, priority, logic)
         tasks.append(task)
+        task_dict[title] = task
         print('Task has been successfully added.')
+    except ValueError:
+        print("Invalid priority or date format. Please try again.")
     except Exception as e:
         print(f"Error: {e}")
 
+
 def delete_task():
     title = input("Enter title of task to delete: ")
-    for task in tasks:
-        if task.title == title:
-            tasks.remove(task)
-            print("Task deleted.")
-            return
-    print("Task not found.")
+    task = task_dict.pop(title, None)
+    if task:
+        tasks.remove(task)
+        print("Task deleted.")
+    else:
+        print("Task not found.")
 
+    
 def mark_task_completed():
     title = input("Enter title of completed task: ")
-    for task in tasks:
-        if task.title == title:
-            task.completed = True
-            print("Task marked as completed.")
-            return
-    print("Task not found.")
+    task = task_dict.get(title)
+    if task:
+        task.completed = True
+        print("Task marked as completed.")
+    else:
+        print("Task not found.")
 
 def view_all_tasks():
     if not tasks:
@@ -148,6 +159,7 @@ def read_tasks_from_csv(filename):
         for _, row in df.iterrows():
             task = Task(row['title'], row['description'], row['due_date'], row['priority'], row['logical_expression'], row['completed'])
             tasks.append(task)
+            task_dict[task.title] = task
         print("Tasks loaded successfully.")
     except Exception as e:
         print(f"Failed to read file: {e}")
@@ -168,7 +180,6 @@ def write_tasks_to_csv(filename):
     except Exception as e:
         print(f"Failed to write file: {e}")
 
-
 #7) menu
 
 def display_menu():
@@ -184,7 +195,31 @@ def display_menu():
     print("9. Search Task (Recursive)")
     print("10. Load Tasks from CSV")
     print("11. Save Tasks to CSV")
+    print("12. Analyze Sort Performance")
     print("0. Exit")
+
+def analyze_sort_performance():
+    print("\nAnalyzing performance:")
+    algorithms = [InsertionSort, MergeSort]
+    times = []
+
+    for SortAlgorithm in algorithms:
+        start = time.time()
+        SortAlgorithm().sort(tasks[:])
+        end = time.time()
+        duration = end - start
+        times.append(duration)
+        print(f"{SortAlgorithm.__name__} took {duration:.6f} seconds on current dataset.")
+
+
+    names = [algo.__name__ for algo in algorithms]
+    plt.bar(names, times, color=['skyblue', 'lightgreen'])
+    plt.title("Sorting Algorithm Performance")
+    plt.xlabel("Algorithm")
+    plt.ylabel("Time (seconds)")
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
 
 def task_manager():
     while True:
@@ -216,6 +251,8 @@ def task_manager():
         elif choice == '11':
             filename = input("Enter filename to save to: ")
             write_tasks_to_csv(filename)
+        elif choice == '12':
+            analyze_sort_performance()
         elif choice == '0':
             print("Goodbye!")
             break
